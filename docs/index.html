@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniQuery Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2em;
+      padding: 0;
+    }
+    .box {
+      background: #eee;
+      padding: 1em;
+      margin: 1em 0;
+      border-radius: 6px;
+    }
+    input, button {
+      margin: 0.5em 0;
+      padding: 0.5em;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1em;
+    }
+    .tabs button {
+      flex: 1;
+      margin-right: 0.5em;
+      padding: 0.5em 1em;
+      border: none;
+      background: #ccc;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .tabs button.active {
+      background: #444;
+      color: #fff;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @media (max-width: 600px) {
+      .tabs button {
+        flex: 100%;
+        margin-bottom: 0.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>MiniQuery v1.0.0 Demo</h1>
+
+  <div class="tabs">
+    <button data-tab="core" class="active">Core API</button>
+    <button data-tab="ajax">AJAX</button>
+    <button data-tab="plugin">Plugin</button>
+    <button data-tab="extra">More Plugins</button>
+  </div>
+
+  <div id="core" class="tab-content active">
+    <h2>Core API</h2>
+    <div class="box" id="demoBox">Hello, MiniQuery!</div>
+    <input type="text" id="nameInput" placeholder="Enter your name" />
+    <button id="updateBtn">Update Text</button>
+    <button id="fadeInBtn">Fade In</button>
+    <button id="fadeOutBtn">Fade Out</button>
+  </div>
+
+  <div id="ajax" class="tab-content">
+    <h2>AJAX Example</h2>
+    <button id="loadDataBtn">Load Remote Data</button>
+    <div class="box" id="result"></div>
+  </div>
+
+  <div id="plugin" class="tab-content">
+    <h2>Plugin Example</h2>
+    <button id="rainbowBtn">Apply Rainbow Effect</button>
+    <div class="box" id="pluginBox">Colorful Text Box</div>
+  </div>
+
+  <div id="extra" class="tab-content">
+    <h2>More Plugins</h2>
+    <button id="blinkBtn">Blink Effect</button>
+    <div class="box" id="blinkBox">Watch me blink!</div>
+    <button id="highlightBtn">Highlight</button>
+    <div class="box" id="highlightBox">I’ll be highlighted</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/miniquery-vjs@1.0.0/dist/miniquery.umd.min.js"></script>
+  <script>
+    // Tab Switching
+    $('.tabs button').on('click', function () {
+      const tab = this.getAttribute('data-tab');
+      $('.tabs button').removeClass('active');
+      $(this).addClass('active');
+      $('.tab-content').removeClass('active');
+      $('#' + tab).addClass('active');
+    });
+
+    // Core API Demo
+    const $box = $('#demoBox');
+    $('#updateBtn').on('click', () => {
+      const name = $('#nameInput').val();
+      $box.text(`Hello, ${name || 'MiniQuery'}!`);
+    });
+    $('#fadeInBtn').on('click', () => $box.fadeIn());
+    $('#fadeOutBtn').on('click', () => $box.fadeOut());
+
+    // AJAX Demo
+    $('#loadDataBtn').on('click', async () => {
+      const res = await $.get('https://jsonplaceholder.typicode.com/users/1');
+      $('#result').html(`<pre>${JSON.stringify(res, null, 2)}</pre>`);
+    });
+
+    // Plugin: Rainbow
+	$.plugin('rainbow', function () {
+		const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+		return this.each((el) => {
+		const text = el.textContent;
+		let coloredText = '';
+		for (let i = 0; i < text.length; i++) {
+		coloredText += `<span style="color:${colors[i % colors.length]}">${text[i]}</span>`;
+		}
+    el.innerHTML = coloredText;
+    el.style.fontWeight = 'bold';
+  });
+});
+    $('#rainbowBtn').on('click', () => $('#pluginBox').rainbow());
+
+    // Plugin: Blink
+    $.plugin('blink', function () {
+      return this.each((el) => {
+        let visible = true;
+        setInterval(() => {
+          el.style.visibility = visible ? 'hidden' : 'visible';
+          visible = !visible;
+        }, 500);
+      });
+    });
+    $('#blinkBtn').on('click', () => $('#blinkBox').blink());
+
+    // Plugin: Highlight
+    $.plugin('highlight', function () {
+      return this.each((el) => {
+        el.style.transition = 'background 0.5s';
+        el.style.background = 'yellow';
+        setTimeout(() => {
+          el.style.background = '';
+        }, 1000);
+      });
+    });
+    $('#highlightBtn').on('click', () => $('#highlightBox').highlight());
+  </script>
+</body>
+</html>
