@@ -1,4 +1,4 @@
-# MiniQuery
+# MiniQuery - https://coreyadam8.github.io/miniquery/
 
 A lightweight, modular JavaScript utility library with plugin support.  
 MiniQuery provides a simple API for DOM manipulation, AJAX requests, and easy extensibility through plugins — all in a compact, dependency-free package.
